@@ -31,6 +31,9 @@ schemars = "0.8"
 thiserror = "1"
 anyhow = "1"
 
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
+
 # Date/time handling
 chrono = { version = "0.4", features = ["serde"] }
 
@@ -70,3 +73,7 @@ tokio-test = "0.4"
 [[bin]]
 name = "stellar-operator"
 path = "src/main.rs"
+
+[[bin]]
+name = "kubectl-stellar"
+path = "src/kubectl_plugin.rs"
