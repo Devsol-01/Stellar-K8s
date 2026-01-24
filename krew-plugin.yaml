@@ -16,6 +16,9 @@ spec:
     
     Requires the Stellar-K8s operator to be installed in your cluster.
   homepage: https://github.com/stellar/stellar-k8s
+  # NOTE: SHA256 placeholders must be replaced with actual hashes before publishing to Krew.
+  # These should be calculated during the CI/CD release process and updated automatically
+  # when creating GitHub releases. See .github/workflows/release.yml for automation.
   platforms:
     - uri: https://github.com/stellar/stellar-k8s/releases/download/v0.1.0/kubectl-stellar-linux-amd64.tar.gz
       sha256: PLACEHOLDER_SHA256_LINUX_AMD64
