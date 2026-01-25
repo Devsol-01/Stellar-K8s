@@ -94,7 +94,7 @@ async fn main() {
 async fn run(cli: Cli) -> Result<()> {
     let client = Client::try_default()
         .await
-        .map_err(|e| Error::KubeError(e))?;
+        .map_err(Error::KubeError)?;
 
     match cli.command {
         Commands::List { all_namespaces } => {
@@ -539,6 +539,7 @@ mod tests {
                 ingress: None,
                 maintenance_mode: false,
                 network_policy: None,
+                dr_config: None,
                 topology_spread_constraints: None,
             },
             status: Some(StellarNodeStatus {
@@ -547,12 +548,14 @@ mod tests {
                 conditions: vec![ready_condition],
                 observed_generation: None,
                 message: None,
+                dr_status: None,
                 ledger_sequence: None,
                 endpoint: None,
                 external_ip: None,
                 bgp_status: None,
                 ready_replicas: 1,
                 replicas: 1,
+                last_migrated_version: None,
             }),
         }
     }
