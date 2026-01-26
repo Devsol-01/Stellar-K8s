@@ -204,6 +204,8 @@ impl StellarNodeSpec {
     /// # network_policy: None,
     /// # dr_config: None,
     /// # topology_spread_constraints: None,
+    /// # min_available: None,
+    /// # max_unavailable: None,
     /// # load_balancer: None,
     /// # global_discovery: None,
     /// };
@@ -328,6 +330,8 @@ impl StellarNodeSpec {
     /// # network_policy: None,
     /// # dr_config: None,
     /// # topology_spread_constraints: None,
+    /// # min_available: None,
+    /// # max_unavailable: None,
     /// # load_balancer: None,
     /// # global_discovery: None,
     /// };
@@ -380,6 +384,8 @@ impl StellarNodeSpec {
     /// # network_policy: None,
     /// # dr_config: None,
     /// # topology_spread_constraints: None,
+    /// # min_available: None,
+    /// # max_unavailable: None,
     /// # load_balancer: None,
     /// # global_discovery: None,
     /// };
