@@ -52,8 +52,6 @@ use super::finalizers::STELLAR_NODE_FINALIZER;
 use super::health;
 #[cfg(feature = "metrics")]
 use super::metrics;
-#[cfg(feature = "metrics")]
-use super::metrics;
 use super::mtls;
 use super::peer_discovery;
 use super::remediation;
@@ -1625,7 +1623,7 @@ async fn get_latest_network_ledger(network: &crate::crd::StellarNetwork) -> Resu
     let client = reqwest::Client::new();
     let resp = client.get(url).send().await.map_err(Error::HttpError)?;
     let json: serde_json::Value = resp
-        .json()
+        .json::<serde_json::Value>()
         .await
         .map_err(|e| Error::ConfigError(e.to_string()))?;
 
