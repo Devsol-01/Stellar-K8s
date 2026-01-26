@@ -687,6 +687,7 @@ async fn apply_stellar_node(
                 resources::ensure_service_monitor(client, node).await?;
                 resources::ensure_hpa(client, node).await?;
             }
+            resources::ensure_pdb(client, node).await?;
             resources::ensure_alerting(client, node).await?;
             resources::ensure_network_policy(client, node).await?;
             Ok(())
@@ -939,6 +940,14 @@ async fn cleanup_stellar_node(
             Ok(())
         },
     )
+    .await?;
+    // 3c. Delete PDB
+    apply_or_emit(ctx, node, ActionType::Delete, "PDB", async {
+        if let Err(e) = resources::delete_pdb(client, node).await {
+            warn!("Failed to delete PodDisruptionBudget: {:?}", e);
+        }
+        Ok(())
+    })
     .await?;
     // 4. Delete Service
     apply_or_emit(ctx, node, ActionType::Delete, "Service", async {
