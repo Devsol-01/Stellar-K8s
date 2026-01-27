@@ -516,7 +516,7 @@ fn validate_global_discovery(gd: &GlobalDiscoveryConfig) -> Result<(), String> {
 
 #[allow(dead_code)]
 fn validate_cross_cluster(cc: &CrossClusterConfig) -> Result<(), String> {
-    use super::types::{CrossClusterMode, CrossClusterMeshType};
+    use super::types::{CrossClusterMeshType, CrossClusterMode};
 
     if !cc.enabled {
         return Ok(());

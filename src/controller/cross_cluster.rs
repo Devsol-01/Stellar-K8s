@@ -12,7 +12,10 @@
 //! - Automatic peer discovery
 
 use k8s_openapi::api::core::v1::Service;
-use kube::{api::{Api, Patch, PatchParams}, Client, ResourceExt};
+use kube::{
+    api::{Api, Patch, PatchParams},
+    Client, ResourceExt,
+};
 use tracing::{info, instrument, warn};
 
 use crate::crd::{CrossClusterConfig, CrossClusterMode, StellarNode};
@@ -20,10 +23,7 @@ use crate::error::{Error, Result};
 
 /// Ensure cross-cluster services are configured
 #[instrument(skip(client, node), fields(name = %node.name_any(), namespace = node.namespace()))]
-pub async fn ensure_cross_cluster_services(
-    client: &Client,
-    node: &StellarNode,
-) -> Result<()> {
+pub async fn ensure_cross_cluster_services(client: &Client, node: &StellarNode) -> Result<()> {
     let cross_cluster = match &node.spec.cross_cluster {
         Some(cc) if cc.enabled => cc,
         _ => return Ok(()),
@@ -113,11 +113,10 @@ async fn create_submariner_service_export(
         plural: "serviceexports".to_string(),
     };
 
-    let service_export = DynamicObject::new(&service_name, &api_resource)
-        .within(&namespace);
+    let service_export = DynamicObject::new(&service_name, &api_resource).within(&namespace);
 
     let api: Api<DynamicObject> = Api::namespaced_with(client.clone(), &namespace, &api_resource);
-    
+
     match api
         .patch(
             &service_name,
@@ -131,7 +130,10 @@ async fn create_submariner_service_export(
             Ok(())
         }
         Err(e) => {
-            warn!("Failed to create ServiceExport (Submariner may not be installed): {}", e);
+            warn!(
+                "Failed to create ServiceExport (Submariner may not be installed): {}",
+                e
+            );
             Ok(()) // Don't fail if Submariner is not installed
         }
     }
@@ -145,7 +147,7 @@ async fn create_istio_service_export(
 ) -> Result<()> {
     let namespace = node.namespace().unwrap_or_else(|| "default".to_string());
     let service_name = format!("{}-service", node.name_any());
-    
+
     let cluster_set_id = mesh_config
         .cluster_set_id
         .as_ref()
@@ -163,8 +165,9 @@ async fn create_istio_service_export(
         plural: "serviceentries".to_string(),
     };
 
-    let mut service_entry = DynamicObject::new(&format!("{}-cross-cluster", service_name), &api_resource)
-        .within(&namespace);
+    let mut service_entry =
+        DynamicObject::new(&format!("{}-cross-cluster", service_name), &api_resource)
+            .within(&namespace);
 
     // Set the spec
     service_entry.data = serde_json::json!({
@@ -196,7 +199,7 @@ async fn create_istio_service_export(
     service_entry.metadata.labels = Some(labels);
 
     let api: Api<DynamicObject> = Api::namespaced_with(client.clone(), &namespace, &api_resource);
-    
+
     match api
         .patch(
             &format!("{}-cross-cluster", service_name),
@@ -210,7 +213,10 @@ async fn create_istio_service_export(
             Ok(())
         }
         Err(e) => {
-            warn!("Failed to create ServiceEntry (Istio may not be installed): {}", e);
+            warn!(
+                "Failed to create ServiceEntry (Istio may not be installed): {}",
+                e
+            );
             Ok(()) // Don't fail if Istio is not installed
         }
     }
@@ -242,7 +248,7 @@ async fn ensure_external_name_services(
         }
 
         let service_name = format!("{}-peer-{}", node.name_any(), peer.cluster_id);
-        
+
         let external_service = build_external_name_service(node, peer, &service_name);
 
         api.patch(
@@ -272,9 +278,15 @@ fn build_external_name_service(
     use std::collections::BTreeMap;
 
     let mut labels = BTreeMap::new();
-    labels.insert("app.kubernetes.io/name".to_string(), "stellar-node".to_string());
+    labels.insert(
+        "app.kubernetes.io/name".to_string(),
+        "stellar-node".to_string(),
+    );
     labels.insert("app.kubernetes.io/instance".to_string(), node.name_any());
-    labels.insert("stellar.org/peer-cluster".to_string(), peer.cluster_id.clone());
+    labels.insert(
+        "stellar.org/peer-cluster".to_string(),
+        peer.cluster_id.clone(),
+    );
 
     let port = peer.port.unwrap_or(11625);
 
@@ -363,7 +375,7 @@ async fn measure_peer_latency(
 
     // Collect multiple samples
     let mut samples = Vec::new();
-    
+
     for _ in 0..config.sample_count {
         let latency = match config.method {
             LatencyMeasurementMethod::Ping => {
@@ -391,7 +403,7 @@ async fn measure_peer_latency(
     samples.sort_unstable();
     let index = ((config.percentile as f64 / 100.0) * samples.len() as f64).ceil() as usize - 1;
     let index = index.min(samples.len() - 1);
-    
+
     Ok(samples[index])
 }
 
@@ -400,7 +412,7 @@ async fn measure_ping_latency(endpoint: &str) -> Result<u32> {
     // Note: ICMP ping requires elevated privileges
     // In production, use a sidecar container with NET_RAW capability
     info!("ICMP ping to {} (requires NET_RAW capability)", endpoint);
-    
+
     // Placeholder: return simulated latency
     // In production, use surge-ping or similar library
     Ok(50)
@@ -414,7 +426,7 @@ async fn measure_tcp_latency(endpoint: &str, port: u16) -> Result<u32> {
 
     let start = Instant::now();
     let addr = format!("{}:{}", endpoint, port);
-    
+
     match timeout(Duration::from_secs(5), TcpStream::connect(&addr)).await {
         Ok(Ok(_)) => {
             let latency = start.elapsed().as_millis() as u32;
