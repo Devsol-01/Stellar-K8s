@@ -32,9 +32,7 @@ use tracing::{info, instrument, warn};
 
 use crate::crd::{
     ExternalTrafficPolicy, HsmProvider, IngressConfig, KeySource, LoadBalancerConfig,
-    LoadBalancerMode, NetworkPolicyConfig, NodeType, StellarNode,
-    ExternalTrafficPolicy, IngressConfig, KeySource, LoadBalancerConfig, LoadBalancerMode,
-    NetworkPolicyConfig, NodeType, RolloutStrategy, StellarNode,
+    LoadBalancerMode, NetworkPolicyConfig, NodeType, RolloutStrategy, StellarNode,
 };
 use crate::error::{Error, Result};
 
@@ -1661,7 +1659,7 @@ fn build_container(node: &StellarNode, enable_mtls: bool) -> Container {
                             ..Default::default()
                         }),
                     });
-                     env_vars.push(EnvVar {
+                    env_vars.push(EnvVar {
                         name: "HSM_USER".to_string(),
                         value: None,
                         value_from: Some(EnvVarSource {
