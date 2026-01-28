@@ -28,6 +28,7 @@ mod stellar_node_spec_validation {
                 key_source: Default::default(),
                 kms_config: None,
                 vl_source: None,
+                hsm_config: None,
             }),
             horizon_config: None,
             soroban_config: None,
@@ -39,12 +40,15 @@ mod stellar_node_spec_validation {
             database: None,
             autoscaling: None,
             ingress: None,
+            strategy: Default::default(),
             maintenance_mode: false,
             network_policy: None,
             dr_config: None,
             topology_spread_constraints: None,
             load_balancer: None,
             global_discovery: None,
+            cluster: None,
+            cross_cluster: None,
         }
     }
 
@@ -74,12 +78,15 @@ mod stellar_node_spec_validation {
             database: None,
             autoscaling: None,
             ingress: None,
+            strategy: Default::default(),
             maintenance_mode: false,
             network_policy: None,
             dr_config: None,
             topology_spread_constraints: None,
             load_balancer: None,
             global_discovery: None,
+            cluster: None,
+            cross_cluster: None,
         }
     }
 
@@ -107,12 +114,15 @@ mod stellar_node_spec_validation {
             database: None,
             autoscaling: None,
             ingress: None,
+            strategy: Default::default(),
             maintenance_mode: false,
             network_policy: None,
             dr_config: None,
             topology_spread_constraints: None,
             load_balancer: None,
             global_discovery: None,
+            cluster: None,
+            cross_cluster: None,
         }
     }
 
